@@ -2,10 +2,8 @@ module.exports = {
   content: ["./index.html", "./web/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
-      backgroundImage: {
-        "gradient-radial-custom":
-          "radial-gradient(ellipse at center, white 0.5rem, rgb(0, 0, 0, 0) 40rem)",
-        grid: "url('/web/assets/default-background.svg')",
+      colors: {
+        'sage-green': '#8aaf9c',
       },
       keyframes: {
         "app-logo-spin": {

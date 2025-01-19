@@ -8,9 +8,9 @@ export const schema: GadgetModel = {
   storageKey: "zy6Xd8qyVo5i",
   fields: {
     category: {
-      type: "hasOne",
-      child: { model: "categories", belongsToField: "purchase" },
-      storageKey: "MMbyFvL_cnRo",
+      type: "belongsTo",
+      parent: { model: "categories" },
+      storageKey: "S2uP-pR84C52",
     },
     itemName: {
       type: "string",

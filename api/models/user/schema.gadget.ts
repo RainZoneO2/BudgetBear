@@ -1,6 +1,6 @@
 import type { GadgetModel } from "gadget-server";
 
-// This file describes the schema for the "user" model, go to https://getbudgetbear.gadget.app/edit to view/edit your model in Gadget
+// This file describes the schema for the "user" model, go to https://mybudgetbear.gadget.app/edit to view/edit your model in Gadget
 // For more information on how to update this file http://docs.gadget.dev
 
 export const schema: GadgetModel = {
@@ -61,6 +61,11 @@ export const schema: GadgetModel = {
       validations: { strongPassword: true },
       storageKey:
         "ModelField-axMNjJbuoylp::FieldStorageEpoch-DhZO_oI4vNK6",
+    },
+    purchases: {
+      type: "hasMany",
+      children: { model: "purchases", belongsToField: "user" },
+      storageKey: "Ky70PeIyh_4c",
     },
     resetPasswordToken: {
       type: "string",

@@ -1,5 +1,9 @@
 import { useState } from "react";
 import { Mic, AudioLines } from "lucide-react";
+// import AudioRecorder from "../components/AudioRecorder.js"
+import Groq from "groq-sdk";
+
+const groq = new Groq({ apiKey: 'apigsk_LadNqj85egLl7eT3y0bAWGdyb3FYTAbFSSHMTrkHSwEWCogl8Ges', dangerouslyAllowBrowser: true});
 
 export default function() {
   const [isListening, setIsListening] = useState(false);
@@ -9,8 +13,9 @@ export default function() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen">
-      <div className="relative">
+    <div className="flex flex-col items-center justify-center h-screen">
+       
+      <div className="relative flex items-center justify-center">
         {/* Live sound waves effect */}
         {isListening && (
           <>

@@ -21,8 +21,8 @@ export const schema: GadgetModel = {
     },
     parentCategoryId: { type: "string", storageKey: "Q2jwl3kRkbnk" },
     purchase: {
-      type: "belongsTo",
-      parent: { model: "purchases" },
+      type: "hasMany",
+      children: { model: "purchases", belongsToField: "category" },
       storageKey: "-a6P089Dvlyw",
     },
     user: {

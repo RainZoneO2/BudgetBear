@@ -1,11 +1,7 @@
-import Menu from "../components/Menu";
-
 export default function() {
   return (
-    <>      
-
-      {/* <div className="app-link">
-        <img src="https://assets.gadget.dev/assets/default-app-assets/react-logo.svg" className="app-logo" alt="logo" />
+    <>
+      <div className="app-link">
         <span>You are now signed out of {process.env.GADGET_APP} &nbsp;</span>
       </div>
       <div>
@@ -13,7 +9,7 @@ export default function() {
         <a href="/edit/files/web/routes/index.jsx" target="_blank" rel="noreferrer" style={{ fontWeight: 500 }}>
           web/routes/index.jsx
         </a>
-      </div> */}
+      </div>
     </>
   );
 }
