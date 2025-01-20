@@ -11,7 +11,6 @@ export const schema: GadgetModel = {
     description: { type: "string", storageKey: "H-SNQQXU2CLH" },
     monthlyBudgetLimit: {
       type: "number",
-      validations: { required: true },
       storageKey: "BgeZP9Hq2xQK",
     },
     name: {
@@ -24,6 +23,11 @@ export const schema: GadgetModel = {
       type: "hasMany",
       children: { model: "purchases", belongsToField: "category" },
       storageKey: "-a6P089Dvlyw",
+    },
+    selected: {
+      type: "boolean",
+      default: false,
+      storageKey: "DFHVqZ5YWA1i",
     },
     user: {
       type: "belongsTo",

@@ -1,6 +1,17 @@
-import { Home, DollarSign, BarChart2, Settings, Plus, Camera, Image } from "lucide-react";
+import {
+  Home,
+  DollarSign,
+  BarChart2,
+  Settings,
+  Plus,
+  Camera,
+  Image,
+  ShoppingCart,
+} from "lucide-react";
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useAction } from "@gadgetinc/react";
+import { api } from "../api";
 
 const menuItems = [
   { icon: Home, label: "Home", path: "/home" },
@@ -14,6 +25,14 @@ const Menu = () => {
   const location = useLocation();
   const [activeItem, setActiveItem] = useState(location.pathname);
   const [isDropdownOpen, setDropdownOpen] = useState(false);
+  const [isPurchaseDialogOpen, setPurchaseDialogOpen] = useState(false);
+  const [purchaseForm, setPurchaseForm] = useState({
+    itemName: "",
+    quantity: "",
+    receiptId: "",
+    totalCost: "",
+  });
+  const [{ fetching: creating }, createPurchase] = useAction(api.purchases.create);
 
   const handleNavigation = (path) => {
     setActiveItem(path);
@@ -37,6 +56,37 @@ const Menu = () => {
   const handleTakePicture = () => {
     setDropdownOpen(false);
     navigate("/add");
+  };
+
+  const handlePurchaseInputChange = (e) => {
+    const { name, value } = e.target;
+    setPurchaseForm((prevForm) => ({
+      ...prevForm,
+      [name]: value,
+    }));
+  };
+
+  const handlePurchaseSubmit = async () => {
+    if (!purchaseForm.itemName || !purchaseForm.totalCost) {
+      alert("Please fill in the mandatory fields: Item Name and Total Cost.");
+      return;
+    }
+
+    try {
+      await createPurchase({
+        itemName: purchaseForm.itemName,
+        quantity: purchaseForm.quantity ? parseInt(purchaseForm.quantity) : undefined,
+        receiptId: purchaseForm.receiptId || undefined,
+        totalCost: parseFloat(purchaseForm.totalCost),
+      });
+      setPurchaseForm({ itemName: "", quantity: "", receiptId: "", totalCost: "" });
+      setPurchaseDialogOpen(false);
+      setDropdownOpen(false);
+      alert("Purchase successfully created!");
+    } catch (error) {
+      console.error("Error creating purchase:", error);
+      alert("Failed to create purchase. Please try again.");
+    }
   };
 
   return (
@@ -95,6 +145,13 @@ const Menu = () => {
                     <Image className="h-5 w-5 text-sage-green mr-2" />
                     <span className="text-sm font-medium">Import from Gallery</span>
                   </button>
+                  <button
+                    onClick={() => setPurchaseDialogOpen(true)}
+                    className="flex items-center px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
+                  >
+                    <ShoppingCart className="h-5 w-5 text-sage-green mr-2" />
+                    <span className="text-sm font-medium">Input Purchase</span>
+                  </button>
                 </div>
               )}
             </div>
@@ -126,6 +183,121 @@ const Menu = () => {
           ))}
         </div>
       </div>
+
+      {/* Purchase Dialog */}
+      {isPurchaseDialogOpen && (
+  <div
+    className="fixed inset-0 flex items-center bg-black/50 z-50"
+    style={{ justifyContent: "flex-start", paddingTop: "10vh" }} // Offset the dialog higher
+  >
+    <div
+      className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-lg w-10/12 max-w-xs"
+      style={{
+        maxHeight: "90vh", // Ensure it doesn't exceed viewport height
+        overflowY: "auto", // Scroll if content exceeds max height
+      }}
+    >
+      <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">
+        Input Purchase
+      </h2>
+      <div className="mb-4">
+        <label
+          htmlFor="itemName"
+          className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+        >
+          Item Name <span className="text-red-500">*</span>
+        </label>
+        <input
+          type="text"
+          id="itemName"
+          value={purchaseForm.itemName}
+          onChange={(e) =>
+            setPurchaseForm((prev) => ({ ...prev, itemName: e.target.value }))
+          }
+          className="w-full px-3 py-2 border rounded-md focus:ring-sage-green focus:border-sage-green dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+          placeholder="Enter item name"
+          required
+        />
+      </div>
+      <div className="mb-4">
+        <label
+          htmlFor="quantity"
+          className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+        >
+          Quantity
+        </label>
+        <input
+          type="number"
+          id="quantity"
+          value={purchaseForm.quantity || ""}
+          onChange={(e) =>
+            setPurchaseForm((prev) => ({
+              ...prev,
+              quantity: parseInt(e.target.value, 10) || 0,
+            }))
+          }
+          className="w-full px-3 py-2 border rounded-md focus:ring-sage-green focus:border-sage-green dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+          placeholder="Enter quantity (optional)"
+        />
+      </div>
+      <div className="mb-4">
+        <label
+          htmlFor="receiptId"
+          className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+        >
+          Receipt ID
+        </label>
+        <input
+          type="text"
+          id="receiptId"
+          value={purchaseForm.receiptId || ""}
+          onChange={(e) =>
+            setPurchaseForm((prev) => ({ ...prev, receiptId: e.target.value }))
+          }
+          className="w-full px-3 py-2 border rounded-md focus:ring-sage-green focus:border-sage-green dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+          placeholder="Enter receipt ID (optional)"
+        />
+      </div>
+      <div className="mb-4">
+        <label
+          htmlFor="totalCost"
+          className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+        >
+          Total Cost <span className="text-red-500">*</span>
+        </label>
+        <input
+          type="number"
+          id="totalCost"
+          value={purchaseForm.totalCost || ""}
+          onChange={(e) =>
+            setPurchaseForm((prev) => ({
+              ...prev,
+              totalCost: parseFloat(e.target.value) || 0,
+            }))
+          }
+          className="w-full px-3 py-2 border rounded-md focus:ring-sage-green focus:border-sage-green dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+          placeholder="Enter total cost"
+          required
+        />
+      </div>
+      <div className="flex justify-end gap-3">
+        <button
+          onClick={() => setDialogOpen(false)}
+          className="px-4 py-2 text-gray-600 dark:text-gray-300 bg-gray-200 dark:bg-gray-700 rounded-md hover:bg-gray-300 dark:hover:bg-gray-600 transition"
+        >
+          Cancel
+        </button>
+        <button
+          onClick={handlePurchaseSubmit}
+          className="px-4 py-2 text-white bg-sage-green rounded-md hover:bg-green-700 transition"
+        >
+          Submit
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
     </nav>
   );
 };

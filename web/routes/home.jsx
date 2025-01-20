@@ -54,21 +54,24 @@ const Home = () => {
   };
 
   // Process data for spending by category
+  const selectedCategories = categories.filter((category) => category.selected); // Only include selected categories
+  
   const categoryData = {
-  labels: categories.map((category) => category.name),
-  datasets: [
-    {
-      label: "Spending by Category",
-      data: categories.map((category) => {
-        // Sum purchases based on matching categoryId
-        return purchases
-          .filter((purchase) => purchase.categoryId === category.id)
-          .reduce((sum, purchase) => sum + purchase.totalCost, 0);
-      }),
-      backgroundColor: categories.map((category) => category.color || "#CCCCCC"), // Use category color, fallback to gray
-    },
-  ],
-};
+    labels: selectedCategories.map((category) => category.name), // Use only selected categories
+    datasets: [
+      {
+        label: "Spending by Category",
+        data: selectedCategories.map((category) => {
+          // Sum purchases based on matching categoryId
+          return purchases
+            .filter((purchase) => purchase.categoryId === category.id)
+            .reduce((sum, purchase) => sum + purchase.totalCost, 0);
+        }),
+        backgroundColor: selectedCategories.map((category) => category.color || "#CCCCCC"), // Use category color, fallback to gray
+      },
+    ],
+  };
+
 
   // Calculate total spent for the week dynamically
   const totalSpent = purchases.reduce((sum, { totalCost }) => sum + totalCost, 0);

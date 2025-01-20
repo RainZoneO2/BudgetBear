@@ -2,7 +2,6 @@ import { useUser, useSignOut } from "@gadgetinc/react";
 import { api } from "../api";
 import userIcon from "../assets/default-user-icon.svg";
 import { Link } from "react-router-dom";
-import Categories from "../components/Categories"
 
 export default function () {
   const user = useUser(api);
@@ -11,7 +10,6 @@ export default function () {
   return user ? (
     <>
       <div>
-        <Categories />
         <a
           className="font-medium text-[#0000ee]"
           href="/edit/files/frontend/routes/signed-in.jsx"
